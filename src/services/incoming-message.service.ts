@@ -2,7 +2,7 @@ import { tenantService } from "./tenant.service";
 import { whatsappNumberService } from "./whatsapp-number.service";
 import { usageService } from "./usage.service";
 import { sessionService } from "./session.service";
-import { moduleRouter } from "../modules/module.router";
+
 
 export const incomingMessageService = {
   async process(event: any) {
@@ -40,17 +40,6 @@ export const incomingMessageService = {
       tenant.id,
       event.from
     );
-
-    const context = {
-      tenant,
-      whatsappNumber,
-      subscription,
-      usage,
-      session,
-      event,
-    };
-
-    await moduleRouter.handle(context);
 
     await usageService.increment(tenant.id);
   },
