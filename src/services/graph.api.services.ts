@@ -184,9 +184,13 @@ export class GraphApiService {
     messageId: string,
     senderPhoneNumberId: string,
     recipientPhoneNumber: string,
-    template: string
+    template: string,
+     userId: "4c25123a-117b-4bdb-87fe-f6afb15d3c2c",
+
   ): Promise<unknown> {
     const safeRecipient = String(recipientPhoneNumber || "").replace(/\D/g, "");
+    const payload = `${userId}__${safeRecipient || "lead-demo-001"}`;
+    
 
     return this.messageWithMediaCardCarousel(
       messageId,
@@ -199,7 +203,7 @@ export class GraphApiService {
           {
             imageLink:
               "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/generatefix.png",
-            buttonUrlSuffix: safeRecipient || "lead-demo-001",
+            buttonUrlSuffix: payload
           },
           {
             imageLink:
