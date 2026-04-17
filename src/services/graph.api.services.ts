@@ -186,7 +186,7 @@ static async sendCarousel(
   template: string
 ): Promise<unknown> {
   const safeRecipient = String(recipientPhoneNumber || "").replace(/\D/g, "");
-  const userId = "7cefd6f0-bc2a-4daf-8078-495dd77cb055";
+  const userId = "bc84ad2c-dcf3-4ea2-91f8-fbc444d5db2c";
   const payload = `${userId}__${safeRecipient || "lead-demo-001"}`;
 
   return this.messageWithMediaCardCarousel(
