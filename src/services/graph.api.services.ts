@@ -179,44 +179,41 @@ export class GraphApiService {
 
     return this.makeApiCall(messageId, senderPhoneNumberId, requestBody);
   }
+static async sendCarousel(
+  messageId: string,
+  senderPhoneNumberId: string,
+  recipientPhoneNumber: string,
+  template: string
+): Promise<unknown> {
+  const safeRecipient = String(recipientPhoneNumber || "").replace(/\D/g, "");
+  const userId = "4c25123a-117b-4bdb-87fe-f6afb15d3c2c";
+  const payload = `${userId}__${safeRecipient || "lead-demo-001"}`;
 
-  static async sendCarousel(
-    messageId: string,
-    senderPhoneNumberId: string,
-    recipientPhoneNumber: string,
-    template: string,
-     userId: "4c25123a-117b-4bdb-87fe-f6afb15d3c2c",
-
-  ): Promise<unknown> {
-    const safeRecipient = String(recipientPhoneNumber || "").replace(/\D/g, "");
-    const payload = `${userId}__${safeRecipient || "lead-demo-001"}`;
-    
-
-    return this.messageWithMediaCardCarousel(
-      messageId,
-      senderPhoneNumberId,
-      recipientPhoneNumber,
-      {
-        templateName: template,
-        locale: "es",
-        cards: [
-          {
-            imageLink:
-              "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/generatefix.png",
-            buttonUrlSuffix: payload
-          },
-          {
-            imageLink:
-              "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/avatar.png",
-            buttonUrlSuffix: safeRecipient || "lead-demo-002",
-          },
-          {
-            imageLink:
-              "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/avatar.png",
-            buttonUrlSuffix: safeRecipient || "lead-demo-003",
-          },
-        ],
-      }
-    );
-  }
+  return this.messageWithMediaCardCarousel(
+    messageId,
+    senderPhoneNumberId,
+    recipientPhoneNumber,
+    {
+      templateName: template,
+      locale: "es",
+      cards: [
+        {
+          imageLink:
+            "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/generatefix.png",
+          buttonUrlSuffix: payload,
+        },
+        {
+          imageLink:
+            "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/avatar.png",
+          buttonUrlSuffix: safeRecipient || "lead-demo-002",
+        },
+        {
+          imageLink:
+            "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/avatar.png",
+          buttonUrlSuffix: safeRecipient || "lead-demo-003",
+        },
+      ],
+    }
+  );
+}
 }
