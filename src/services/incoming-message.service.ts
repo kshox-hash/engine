@@ -1,12 +1,12 @@
 import { tenantService } from "./tenant.service";
-import { whatsappNumberService } from "./whatsapp-number.service";
+import { findByPhoneNumberService } from "./whatsapp-number.service";
 import { usageService } from "./usage.service";
 import { sessionService } from "./session.service";
 
 
 export const incomingMessageService = {
   async process(event: any) {
-    const whatsappNumber = await whatsappNumberService.findByPhoneNumberId(
+    const whatsappNumber = await findByPhoneNumberService(
       event.phoneNumberId
     );
 

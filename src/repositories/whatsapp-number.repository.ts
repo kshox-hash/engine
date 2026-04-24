@@ -1,3 +1,19 @@
+import DB from "../db/db_configuration";
+
+export async function findPhoneNumberRepository(phoneNumber:string){
+  const res = await DB.getPool().query(
+      `
+      select phone 
+      from users
+      where phone = $1
+      limit 1
+      `,
+      [phoneNumber]
+  );
+    return res.rowCount ? res.rows[0] : null;
+}
+
+
 const whatsappNumbers = [
   {
     id: "n1",

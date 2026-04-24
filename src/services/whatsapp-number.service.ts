@@ -1,11 +1,10 @@
-import { whatsappNumberRepository } from "../repositories/whatsapp-number.repository";
+import { findPhoneNumberRepository, whatsappNumberRepository } from "../repositories/whatsapp-number.repository";
 
-export const whatsappNumberService = {
-  async findByPhoneNumberId(phoneNumberId: string) {
-    return whatsappNumberRepository.findByPhoneNumberId(phoneNumberId);
-  },
 
-  async findByTenantId(tenantId: string) {
+  export function findByPhoneNumberService(phoneNumber: string) {
+    return findPhoneNumberRepository(phoneNumber)
+  }
+
+  export function findByTenantId(tenantId: string) {
     return whatsappNumberRepository.findByTenantId(tenantId);
-  },
 };

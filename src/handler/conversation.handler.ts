@@ -1,35 +1,28 @@
 import { Message } from "../message";
 import { Status } from "../status";
 import { TemplateEngine } from "../engine/template.engine";
-import { templatesRepository } from "../templates/templates.repository";
-import { numbersRepository } from "../templates/numbers.repository";
 import { RawWhatsAppMessage, RawWhatsAppStatus } from "../types/whatsapp.types";
+import { getTemplateIdService } from "../services/template_service";
+
+//Searh number service
+import { findByPhoneNumberService } from "../services/whatsapp-number.service";
 
 export class ConversationHandler {
   static async handleMessage(
     senderPhoneNumberId: string,
     rawMessage: RawWhatsAppMessage
   ): Promise<void> {
-    console.log("RAW MESSAGE =>");
-    console.log(JSON.stringify(rawMessage, null, 2));
 
     const message = new Message(rawMessage);
-
-    
-    const numberConfig =
-      numbersRepository.findByPhoneNumberId(senderPhoneNumberId);
-
+    //buscar numero en db
+    const numberConfig = await findByPhoneNumberService(senderPhoneNumberId);
+     
     if (!numberConfig) {
       console.log("Número no registrado en el sistema");
       return;
     }
 
-    if (numberConfig.status !== "active") {
-      console.log("Número inactivo");
-      return;
-    }
-
-    const template = templatesRepository.findById(numberConfig.templateId);
+    const template = await getTemplateIdService("template_main_menu")
 
     if (!template) {
       console.log("Plantilla no encontrada");
