@@ -3,9 +3,9 @@ import DB from "../db/db_configuration";
 export async function findPhoneNumberRepository(phoneNumber:string){
   const res = await DB.getPool().query(
       `
-      select phone 
+      select phone_number_id
       from users
-      where phone = $1
+      where phone_number_id = $1
       limit 1
       `,
       [phoneNumber]
