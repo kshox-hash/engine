@@ -17,6 +17,7 @@ export const webhookController = {
   },
 
   async incoming(req: Request<unknown, unknown, WebhookBody>, res: Response) {
+    console.log("📥 RAW WEBHOOK:");
     console.log(JSON.stringify(req.body, null, 2));
 
     if (req.body.object === "whatsapp_business_account") {
@@ -27,12 +28,34 @@ export const webhookController = {
           if (!value) continue;
 
           const senderPhoneNumberId = value.metadata?.phone_number_id ?? "";
+          const displayPhoneNumber = value.metadata?.display_phone_number ?? "";
+
+          console.log("📞 META NUMBER DEBUG:", {
+            senderPhoneNumberId,
+            displayPhoneNumber,
+          });
 
           for (const status of value.statuses ?? []) {
+            console.log("📦 STATUS DEBUG:", {
+              senderPhoneNumberId,
+              displayPhoneNumber,
+              status: status.status,
+              recipientId: status.recipient_id,
+            });
+
             await ConversationHandler.handleStatus(senderPhoneNumberId, status);
           }
 
           for (const rawMessage of value.messages ?? []) {
+            console.log("💬 MESSAGE DEBUG:", {
+              senderPhoneNumberId,
+              displayPhoneNumber,
+              from: rawMessage.from,
+              type: rawMessage.type,
+              text: rawMessage.text?.body,
+              buttonPayload: rawMessage.interactive?.button_reply?.id,
+            });
+
             await ConversationHandler.handleMessage(
               senderPhoneNumberId,
               rawMessage
@@ -48,10 +71,7 @@ export const webhookController = {
   health(_req: Request, res: Response): void {
     res.json({
       message: "Server is running",
-      endpoints: [
-        "GET /webhook",
-        "POST /webhook",
-      ],
+      endpoints: ["GET /webhook", "POST /webhook"],
     });
   },
 };

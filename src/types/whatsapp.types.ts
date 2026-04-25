@@ -29,7 +29,8 @@ export type WebhookBody = {
     changes?: Array<{
       value?: {
         metadata?: {
-          phone_number_id?: string;
+            phone_number_id?: string;
+  display_phone_number?: string; // 👈 AGREGA ESTO
         };
         messages?: RawWhatsAppMessage[];
         statuses?: RawWhatsAppStatus[];
