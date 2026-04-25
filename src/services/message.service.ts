@@ -100,18 +100,19 @@ static async sendQuoteRuntimeLinkMessage(
       "Aquí puedes tomar horas."
     );
   }
-
-  static async sendCarousel(
+    static async sendCarousel(
   messageId: string,
   senderPhoneNumberId: string,
   recipientPhoneNumber: string,
-  template: string
+  template: string,
+  userId: string
 ) {
   return GraphApiService.sendCarousel(
-    messageId,
-    senderPhoneNumberId,
-    recipientPhoneNumber,
-    template // 👈 TU TEMPLATE DE META
-  );
-}
+  messageId,
+  senderPhoneNumberId,
+  recipientPhoneNumber,
+  template,
+  userId // 👈 ESTE ES EL FIX
+)
+} 
 }

@@ -74,7 +74,8 @@ export const actionRegistry = {
           message.id,
           senderPhoneNumberId,
           recipientPhoneNumber,
-          "automatiza_carousel_v3"
+          "automatiza_carousel_v3",
+          userId
         );
 
       default:

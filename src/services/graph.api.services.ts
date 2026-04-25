@@ -183,10 +183,10 @@ static async sendCarousel(
   messageId: string,
   senderPhoneNumberId: string,
   recipientPhoneNumber: string,
-  template: string
+  template: string,
+  userId: string
 ): Promise<unknown> {
   const safeRecipient = String(recipientPhoneNumber || "").replace(/\D/g, "");
-  const userId = "bc84ad2c-dcf3-4ea2-91f8-fbc444d5db2c";
   const payload = `${userId}__${safeRecipient || "lead-demo-001"}`;
 
   return this.messageWithMediaCardCarousel(
@@ -216,4 +216,5 @@ static async sendCarousel(
     }
   );
 }
+
 }
