@@ -58,21 +58,18 @@ export class MessageService {
     );
   }
 
- static async sendQuoteRuntimeLinkMessage(
-  messageId: string,
-  senderPhoneNumberId: string,
-  recipientPhoneNumber: string,
-  userId: string
-): Promise<unknown> {
-  const url = `https://runtimegenerateui.onrender.com/open/cotizador-dinamico/${userId}/${recipientPhoneNumber}`;
-
-  return GraphApiService.sendTextMessage(
-    messageId,
-    senderPhoneNumberId,
-    recipientPhoneNumber,
-    `Aquí puedes iniciar tu cotización:\n${url}`
-  );
-}
+  static async sendQuoteRuntimeLinkMessage(
+    messageId: string,
+    senderPhoneNumberId: string,
+    recipientPhoneNumber: string
+  ): Promise<unknown> {
+    return GraphApiService.sendTextMessage(
+      messageId,
+      senderPhoneNumberId,
+      recipientPhoneNumber,
+      "Aquí puedes iniciar una cotización."
+    );
+  }
 
   static async sendSupportMessage(
     messageId: string,
