@@ -1,12 +1,9 @@
 import { Message } from "../message";
 import { Status } from "../status";
 import { TemplateEngine } from "../engine/template.engine";
-import { RawWhatsAppMessage, RawWhatsAppStatus } from "../types/whatsapp.types";
-import { getTemplateIdService } from "../services/template_service";
-import { findByPhoneNumberService } from "../services/whatsapp-number.service";
-
-// USA AQUÍ LA RUTA REAL DE TU ARCHIVO DONDE DECLARASTE templateMainMenu
 import { templateMainMenu } from "../templates/template.main.menu";
+import { RawWhatsAppMessage, RawWhatsAppStatus } from "../types/whatsapp.types";
+import { findByPhoneNumberService } from "../services/whatsapp-number.service";
 
 export class ConversationHandler {
   static async handleMessage(
@@ -22,19 +19,13 @@ export class ConversationHandler {
       return;
     }
 
-    const templateConfig = await getTemplateIdService("template_main_menu");
-
-    if (!templateConfig) {
-      console.log("Plantilla no encontrada");
-      return;
-    }
-
     const template = templateMainMenu;
 
     await TemplateEngine.handle({
       template,
       message,
       senderPhoneNumberId,
+      userId: numberConfig.id,
     });
   }
 

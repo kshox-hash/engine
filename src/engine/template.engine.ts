@@ -11,8 +11,9 @@ export class TemplateEngine {
     template: ChatTemplate;
     message: Message;
     senderPhoneNumberId: string;
+    userId: string;
   }): Promise<unknown> {
-    const { template, message, senderPhoneNumberId } = params;
+    const { template, message, senderPhoneNumberId, userId } = params;
 
     const incomingText = normalizeText(message.text);
     const incomingPayload = String(message.payload || "").trim();
@@ -23,6 +24,7 @@ export class TemplateEngine {
       message,
       senderPhoneNumberId,
       recipientPhoneNumber,
+      userId,
     };
 
     if (incomingPayload) {

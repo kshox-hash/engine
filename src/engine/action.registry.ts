@@ -7,6 +7,7 @@ type ActionContext = {
   message: Message;
   senderPhoneNumberId: string;
   recipientPhoneNumber: string;
+  userId: string;
 };
 
 export const actionRegistry = {
@@ -14,8 +15,13 @@ export const actionRegistry = {
     actionName: TemplateActionName,
     context: ActionContext
   ): Promise<unknown> {
-    const { template, message, senderPhoneNumberId, recipientPhoneNumber } =
-      context;
+    const {
+      template,
+      message,
+      senderPhoneNumberId,
+      recipientPhoneNumber,
+      userId,
+    } = context;
 
     switch (actionName) {
       case "send_main_menu":
@@ -45,7 +51,8 @@ export const actionRegistry = {
         return MessageService.sendQuoteRuntimeLinkMessage(
           message.id,
           senderPhoneNumberId,
-          recipientPhoneNumber
+          recipientPhoneNumber,
+          userId
         );
 
       case "send_support_message":
