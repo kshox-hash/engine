@@ -3,12 +3,38 @@ import { config } from "../config";
 import { TemplateButton } from "../types/templates.types";
 
 export class GraphApiService {
+  /*
+  =========================================================
+  CONFIGURACIÓN BASE GRAPH API
+  =========================================================
+  */
+
+  private static getMessagesUrl(senderPhoneNumberId: string): string {
+    return `https://graph.facebook.com/v21.0/${senderPhoneNumberId}/messages`;
+  }
+
+  private static getHeaders() {
+    return {
+      Authorization: `Bearer ${config.accessToken}`,
+      "Content-Type": "application/json",
+    };
+  }
+
+  /*
+  =========================================================
+  LLAMADA BASE A META
+  =========================================================
+  */
+
   private static async makeApiCall(
     messageId: string | undefined,
     senderPhoneNumberId: string,
     requestBody: unknown
   ): Promise<unknown> {
     try {
+      const url = this.getMessagesUrl(senderPhoneNumberId);
+      const headers = this.getHeaders();
+
       if (messageId) {
         const typingBody = {
           messaging_product: "whatsapp",
@@ -19,31 +45,13 @@ export class GraphApiService {
           },
         };
 
-        await axios.post(
-          `https://graph.facebook.com/v21.0/${senderPhoneNumberId}/messages`,
-          typingBody,
-          {
-            headers: {
-              Authorization: `Bearer ${config.accessToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        await axios.post(url, typingBody, { headers });
       }
 
       console.log("Request body =>");
       console.log(JSON.stringify(requestBody, null, 2));
 
-      const response = await axios.post(
-        `https://graph.facebook.com/v21.0/${senderPhoneNumberId}/messages`,
-        requestBody,
-        {
-          headers: {
-            Authorization: `Bearer ${config.accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(url, requestBody, { headers });
 
       console.log("API call successful:");
       console.log(JSON.stringify(response.data, null, 2));
@@ -55,6 +63,12 @@ export class GraphApiService {
       throw error;
     }
   }
+
+  /*
+  =========================================================
+  MENSAJE INTERACTIVO CON BOTONES
+  =========================================================
+  */
 
   static async messageWithInteractiveReply(
     messageId: string,
@@ -87,6 +101,12 @@ export class GraphApiService {
     return this.makeApiCall(messageId, senderPhoneNumberId, requestBody);
   }
 
+  /*
+  =========================================================
+  MENSAJE DE TEXTO SIMPLE
+  =========================================================
+  */
+
   static async sendTextMessage(
     messageId: string,
     senderPhoneNumberId: string,
@@ -106,6 +126,12 @@ export class GraphApiService {
 
     return this.makeApiCall(messageId, senderPhoneNumberId, requestBody);
   }
+
+  /*
+  =========================================================
+  TEMPLATE CON CARRUSEL MULTIMEDIA
+  =========================================================
+  */
 
   static async messageWithMediaCardCarousel(
     messageId: string,
@@ -179,42 +205,49 @@ export class GraphApiService {
 
     return this.makeApiCall(messageId, senderPhoneNumberId, requestBody);
   }
-static async sendCarousel(
-  messageId: string,
-  senderPhoneNumberId: string,
-  recipientPhoneNumber: string,
-  template: string,
-  userId: string
-): Promise<unknown> {
-  const safeRecipient = String(recipientPhoneNumber || "").replace(/\D/g, "");
-  const payload = `${userId}__${safeRecipient || "lead-demo-001"}`;
 
-  return this.messageWithMediaCardCarousel(
-    messageId,
-    senderPhoneNumberId,
-    recipientPhoneNumber,
-    {
-      templateName: template,
-      locale: "es",
-      cards: [
-        {
-          imageLink:
-            "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/generatefix.png",
-          buttonUrlSuffix: payload,
-        },
-        {
-          imageLink:
-            "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/avatar.png",
-          buttonUrlSuffix: safeRecipient || "lead-demo-002",
-        },
-        {
-          imageLink:
-            "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/avatar.png",
-          buttonUrlSuffix: safeRecipient || "lead-demo-003",
-        },
-      ],
-    }
-  );
-}
+  /*
+  =========================================================
+  CARRUSEL ESPECÍFICO DEL BOT
+  =========================================================
+  */
 
+  static async sendCarousel(
+    messageId: string,
+    senderPhoneNumberId: string,
+    recipientPhoneNumber: string,
+    template: string,
+    userId: string
+  ): Promise<unknown> {
+    const safeRecipient = String(recipientPhoneNumber || "").replace(/\D/g, "");
+
+    const payload = `${userId}__${safeRecipient || "lead-demo-001"}`;
+
+    return this.messageWithMediaCardCarousel(
+      messageId,
+      senderPhoneNumberId,
+      recipientPhoneNumber,
+      {
+        templateName: template,
+        locale: "es",
+        cards: [
+          {
+            imageLink:
+              "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/generatefix.png",
+            buttonUrlSuffix: payload,
+          },
+          {
+            imageLink:
+              "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/avatar.png",
+            buttonUrlSuffix: safeRecipient || "lead-demo-002",
+          },
+          {
+            imageLink:
+              "https://pub-9df4bc34eee249debc0d04d6df729879.r2.dev/avatar.png",
+            buttonUrlSuffix: safeRecipient || "lead-demo-003",
+          },
+        ],
+      }
+    );
+  }
 }

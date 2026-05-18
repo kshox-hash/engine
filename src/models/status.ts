@@ -1,4 +1,4 @@
-import { RawWhatsAppStatus } from "./types/whatsapp.types";
+import { RawWhatsAppStatus } from "../types/whatsapp.types";
 
 export class Status {
   messageId: string;

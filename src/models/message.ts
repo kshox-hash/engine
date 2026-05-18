@@ -1,4 +1,4 @@
-import { RawWhatsAppMessage } from "./types/whatsapp.types";
+import { RawWhatsAppMessage } from "../types/whatsapp.types";
 
 export class Message {
   rawMessage: RawWhatsAppMessage;

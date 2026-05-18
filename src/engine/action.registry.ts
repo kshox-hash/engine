@@ -1,85 +1,305 @@
-import { Message } from "../message";
-import { MessageService } from "../services/message.service";
-import { ChatTemplate, TemplateActionName } from "../types/templates.types";
+import { Message } from "../models/message";
 
+import { MessageService } from "../services/message.service";
+
+import {
+  ChatTemplate,
+  TemplateActionName
+} from "../types/templates.types";
+
+
+/*
+=========================================================
+CONTEXTO GLOBAL DE ACCIONES
+=========================================================
+Información que cualquier acción puede necesitar.
+=========================================================
+*/
 type ActionContext = {
+
+  // Template actual del chatbot
   template: ChatTemplate;
+
+  // Mensaje recibido
   message: Message;
+
+  // Número de WhatsApp receptor
   senderPhoneNumberId: string;
+
+  // Número del usuario que escribió
   recipientPhoneNumber: string;
+
+  // Usuario/tenant dueño del bot
   userId: string;
 };
 
-export const actionRegistry = {
-  async execute(
-    actionName: TemplateActionName,
-    context: ActionContext
-  ): Promise<unknown> {
+
+/*
+=========================================================
+TIPO DE HANDLER DE ACCIÓN
+=========================================================
+Cada acción recibe contexto
+y devuelve una Promise.
+=========================================================
+*/
+type ActionHandler = (
+  context: ActionContext
+) => Promise<unknown>;
+
+
+/*
+=========================================================
+MAPA DE ACCIONES
+=========================================================
+Cada key representa un actionName.
+
+El value es la función que ejecuta
+la lógica correspondiente.
+=========================================================
+*/
+const actions: Record<
+  TemplateActionName,
+  ActionHandler
+> = {
+
+
+  /*
+  =========================================================
+  ENVÍA MENÚ PRINCIPAL
+  =========================================================
+  */
+  send_main_menu: async (context) => {
+
     const {
       template,
+      message,
+      senderPhoneNumberId,
+      recipientPhoneNumber,
+    } = context;
+
+    return MessageService.sendWelcomeButtonsMessage(
+
+      // ID del mensaje recibido
+      message.id,
+
+      // Número receptor del bot
+      senderPhoneNumberId,
+
+      // Usuario destinatario
+      recipientPhoneNumber,
+
+      // Texto principal del menú
+      template.texts.welcome,
+
+      // Botones del template
+      template.buttons
+    );
+  },
+
+
+  /*
+  =========================================================
+  ENVÍA MENSAJE DE CHATBOX
+  =========================================================
+  */
+  send_chatbox_message: async (context) => {
+
+    const {
+      message,
+      senderPhoneNumberId,
+      recipientPhoneNumber
+    } = context;
+
+    return MessageService.sendChatboxMessage(
+
+      message.id,
+
+      senderPhoneNumberId,
+
+      recipientPhoneNumber
+    );
+  },
+
+
+  /*
+  =========================================================
+  ENVÍA MENSAJE DE CONTACTO
+  =========================================================
+  */
+  send_contact_message: async (context) => {
+
+    const {
+      message,
+      senderPhoneNumberId,
+      recipientPhoneNumber
+    } = context;
+
+    return MessageService.sendContactMessage(
+
+      message.id,
+
+      senderPhoneNumberId,
+
+      recipientPhoneNumber
+    );
+  },
+
+
+  /*
+  =========================================================
+  ENVÍA LINK RUNTIME DE COTIZACIÓN
+  =========================================================
+  */
+  send_quote_runtime_link: async (context) => {
+
+    const {
       message,
       senderPhoneNumberId,
       recipientPhoneNumber,
       userId,
     } = context;
 
-    switch (actionName) {
-      case "send_main_menu":
-        return MessageService.sendWelcomeButtonsMessage(
-          message.id,
-          senderPhoneNumberId,
-          recipientPhoneNumber,
-          template.texts.welcome,
-          template.buttons
-        );
+    return MessageService.sendQuoteRuntimeLinkMessage(
 
-      case "send_chatbox_message":
-        return MessageService.sendChatboxMessage(
-          message.id,
-          senderPhoneNumberId,
-          recipientPhoneNumber
-        );
+      message.id,
 
-      case "send_contact_message":
-        return MessageService.sendContactMessage(
-          message.id,
-          senderPhoneNumberId,
-          recipientPhoneNumber
-        );
+      senderPhoneNumberId,
 
-      case "send_quote_runtime_link":
-        return MessageService.sendQuoteRuntimeLinkMessage(
-          message.id,
-          senderPhoneNumberId,
-          recipientPhoneNumber,
-          userId
-        );
+      recipientPhoneNumber,
 
-      case "send_support_message":
-        return MessageService.sendSupportMessage(
-          message.id,
-          senderPhoneNumberId,
-          recipientPhoneNumber
-        );
+      userId
+    );
+  },
 
-      case "send_appointments_message":
-        return MessageService.sendAppointmentsMessage(
-          message.id,
-          senderPhoneNumberId,
-          recipientPhoneNumber
-        );
 
-      case "send_carousel":
-        return MessageService.sendCarousel(
-          message.id,
-          senderPhoneNumberId,
-          recipientPhoneNumber,
-          "automatiza_carousel_v3",
-          userId
-        );
+  /*
+  =========================================================
+  ENVÍA MENSAJE DE SOPORTE
+  =========================================================
+  */
+  send_support_message: async (context) => {
 
-      default:
-        throw new Error(`Unsupported action: ${actionName}`);
+    const {
+      message,
+      senderPhoneNumberId,
+      recipientPhoneNumber
+    } = context;
+
+    return MessageService.sendSupportMessage(
+
+      message.id,
+
+      senderPhoneNumberId,
+
+      recipientPhoneNumber
+    );
+  },
+
+
+  /*
+  =========================================================
+  ENVÍA MENSAJE DE RESERVAS
+  =========================================================
+  */
+  send_appointments_message: async (context) => {
+
+    const {
+      message,
+      senderPhoneNumberId,
+      recipientPhoneNumber
+    } = context;
+
+    return MessageService.sendAppointmentsMessage(
+
+      message.id,
+
+      senderPhoneNumberId,
+
+      recipientPhoneNumber
+    );
+  },
+
+
+  /*
+  =========================================================
+  ENVÍA CARRUSEL DE WHATSAPP
+  =========================================================
+  */
+  send_carousel: async (context) => {
+
+    const {
+      message,
+      senderPhoneNumberId,
+      recipientPhoneNumber,
+      userId,
+    } = context;
+
+    return MessageService.sendCarousel(
+
+      message.id,
+
+      senderPhoneNumberId,
+
+      recipientPhoneNumber,
+
+      // nombre interno del carrusel
+      "automatiza_carousel_v3",
+
+      userId
+    );
+  },
+};
+
+
+/*
+=========================================================
+ACTION REGISTRY
+=========================================================
+Responsabilidad:
+- buscar acción
+- ejecutar acción
+=========================================================
+*/
+export const actionRegistry = {
+
+  async execute(
+
+    // Nombre de la acción a ejecutar
+    actionName: TemplateActionName,
+
+    // Contexto global de ejecución
+    context: ActionContext
+
+  ): Promise<unknown> {
+
+
+    /*
+    =========================================================
+    BUSCA LA ACCIÓN EN EL MAPA
+    =========================================================
+    */
+    const action = actions[actionName];
+
+
+    /*
+    =========================================================
+    SI LA ACCIÓN NO EXISTE
+    → ERROR
+    =========================================================
+    */
+    if (!action) {
+
+      throw new Error(
+        `Unsupported action: ${actionName}`
+      );
     }
+
+
+    /*
+    =========================================================
+    EJECUTA ACCIÓN
+    =========================================================
+    */
+    return action(context);
   },
 };
