@@ -2,7 +2,7 @@ export const constants = Object.freeze({
   USER_START_MESSAGE: "Toca enviar para comenzar",
 
   APP_DEFAULT_MESSAGE:
-    "Hola 👋 Bienvenido a {{companyName}}.\n\nPuedes revisar nuestros servicios o contactarnos directamente.",
+    "Hola 👋 Bienvenido.\n\nPuedes revisar nuestros servicios o contactarnos directamente.",
 
   APP_CONTACT_MESSAGE:
     "Perfecto. Escríbenos por este mismo chat y una persona te responderá directamente.",

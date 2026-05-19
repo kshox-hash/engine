@@ -1,13 +1,14 @@
 import DB from "../db/db_configuration";
 
-export async function findPhoneNumberRepository(phoneNumberId: string) {
+export async function findPhoneNumberRepository(
+  phoneNumberId: string
+) {
   const res = await DB.getPool().query(
     `
     SELECT 
-      id, 
-      phone_number_id, 
-      template_id,
-      company_name
+      id,
+      phone_number_id,
+      template_id
     FROM users
     WHERE phone_number_id = $1
     LIMIT 1

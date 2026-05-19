@@ -3,7 +3,7 @@ import { MessageService } from "../services/message.service";
 
 import {
   ChatTemplate,
-  TemplateActionName
+  TemplateActionName,
 } from "../types/templates.types";
 
 type ActionContext = {
@@ -12,33 +12,29 @@ type ActionContext = {
   senderPhoneNumberId: string;
   recipientPhoneNumber: string;
   userId: string;
-  companyName?: string;
 };
 
 type ActionHandler = (
   context: ActionContext
 ) => Promise<unknown>;
 
-const actions: Record<TemplateActionName, ActionHandler> = {
+const actions: Record<
+  TemplateActionName,
+  ActionHandler
+> = {
   send_main_menu: async (context) => {
     const {
       template,
       message,
       senderPhoneNumberId,
       recipientPhoneNumber,
-      companyName,
     } = context;
-
-    const welcomeText = template.texts.welcome.replace(
-      "{{companyName}}",
-      companyName || "nuestra empresa"
-    );
 
     return MessageService.sendWelcomeButtonsMessage(
       message.id,
       senderPhoneNumberId,
       recipientPhoneNumber,
-      welcomeText,
+      template.texts.welcome,
       template.buttons
     );
   },
@@ -82,7 +78,9 @@ export const actionRegistry = {
     const action = actions[actionName];
 
     if (!action) {
-      throw new Error(`Unsupported action: ${actionName}`);
+      throw new Error(
+        `Unsupported action: ${actionName}`
+      );
     }
 
     return action(context);

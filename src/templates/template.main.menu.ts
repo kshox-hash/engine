@@ -3,7 +3,9 @@ import { ChatTemplate } from "../types/templates.types";
 
 export const templateMainMenu: ChatTemplate = {
   id: "template_main_menu",
+
   name: "Menú principal",
+
   entryAction: "send_main_menu",
 
   triggers: [
