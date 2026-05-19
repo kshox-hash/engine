@@ -29,8 +29,9 @@ export const webhookController = {
     };
   },
 
-  async _handleStatus(value: any) {
-    const { senderPhoneNumberId } = this._getPhoneMetaData(value);
+  async _handleStatus(value: any): Promise<void> {
+    const { senderPhoneNumberId } =
+      webhookController._getPhoneMetaData(value);
 
     console.log("STATUS PHONE NUMBER ID:", senderPhoneNumberId);
 
@@ -42,9 +43,9 @@ export const webhookController = {
     }
   },
 
-  async _handleMessage(value: any) {
+  async _handleMessage(value: any): Promise<void> {
     const { senderPhoneNumberId, displayPhoneNumber } =
-      this._getPhoneMetaData(value);
+      webhookController._getPhoneMetaData(value);
 
     console.log("MESSAGE PHONE NUMBER ID:", senderPhoneNumberId);
     console.log("DISPLAY PHONE NUMBER:", displayPhoneNumber);
@@ -72,8 +73,8 @@ export const webhookController = {
       console.log("VALUE CONTAINS MESSAGES:", value.messages.length);
     }
 
-    await this._handleStatus(value);
-    await this._handleMessage(value);
+    await webhookController._handleStatus(value);
+    await webhookController._handleMessage(value);
   },
 
   async incoming(
@@ -84,18 +85,18 @@ export const webhookController = {
       console.log("WEBHOOK BODY:");
       console.log(JSON.stringify(req.body, null, 2));
 
-      if (!this._validateWhatsAppAccount(req.body)) {
+      if (!webhookController._validateWhatsAppAccount(req.body)) {
         console.log("INVALID WEBHOOK OBJECT:", req.body?.object);
         res.sendStatus(404);
         return;
       }
 
-      const values = this._getWebhookValues(req.body);
+      const values = webhookController._getWebhookValues(req.body);
 
       console.log("WEBHOOK VALUES COUNT:", values.length);
 
       for (const value of values) {
-        await this._processWebhookValue(value);
+        await webhookController._processWebhookValue(value);
       }
 
       res.status(200).send("EVENT_RECEIVED");
