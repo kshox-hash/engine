@@ -9,33 +9,13 @@ export const templateMainMenu: ChatTemplate = {
   triggers: [
     {
       type: "button",
-      match: constants.REPLY_FUNCTIONS_ID,
-      action: "send_carousel",
-    },
-    {
-      type: "button",
-      match: constants.REPLY_CHATBOX_ID,
-      action: "send_chatbox_message",
+      match: constants.REPLY_SERVICES_ID,
+      action: "send_services_link",
     },
     {
       type: "button",
       match: constants.REPLY_CONTACT_ID,
       action: "send_contact_message",
-    },
-    {
-      type: "text",
-      match: ["cotizar", "quote_start"],
-      action: "send_quote_runtime_link",
-    },
-    {
-      type: "text",
-      match: ["chat soporte", "support_start"],
-      action: "send_support_message",
-    },
-    {
-      type: "text",
-      match: ["toma de horas", "appointments_start"],
-      action: "send_appointments_message",
     },
   ],
 
@@ -45,12 +25,8 @@ export const templateMainMenu: ChatTemplate = {
 
   buttons: [
     {
-      id: constants.REPLY_CHATBOX_ID,
-      title: constants.REPLY_CHATBOX_CTA,
-    },
-    {
-      id: constants.REPLY_FUNCTIONS_ID,
-      title: constants.REPLY_FUNCTIONS_CTA,
+      id: constants.REPLY_SERVICES_ID,
+      title: constants.REPLY_SERVICES_CTA,
     },
     {
       id: constants.REPLY_CONTACT_ID,

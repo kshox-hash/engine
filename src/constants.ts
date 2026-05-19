@@ -2,21 +2,14 @@ export const constants = Object.freeze({
   USER_START_MESSAGE: "Toca enviar para comenzar",
 
   APP_DEFAULT_MESSAGE:
-    "¡Bienvenido a Automatiza Fácil! ¿En qué podemos ayudarte hoy?",
-  APP_TRY_ANOTHER_MESSAGE:
-    "¿Hay algo más en lo que podamos ayudarte?",
-  APP_CHATBOX_MESSAGE:
-    "Cuéntanos qué necesitas automatizar y te ayudamos.",
-  APP_CONTACT_MESSAGE:
-    "Si quieres más información, responde a este mensaje y te contactaremos.",
+    "Hola 👋 Bienvenido a {{companyName}}.\n\nPuedes revisar nuestros servicios o contactarnos directamente.",
 
-  REPLY_CHATBOX_CTA: "Chatbox",
-  REPLY_FUNCTIONS_CTA: "Funciones",
+  APP_CONTACT_MESSAGE:
+    "Perfecto. Escríbenos por este mismo chat y una persona te responderá directamente.",
+
+  REPLY_SERVICES_CTA: "Servicios",
   REPLY_CONTACT_CTA: "Contacto",
 
-  REPLY_CHATBOX_ID: "reply-chatbox",
-  REPLY_FUNCTIONS_ID: "reply-functions",
+  REPLY_SERVICES_ID: "reply-services",
   REPLY_CONTACT_ID: "reply-contact",
-
-  FLOW_MAIN_QUOTE: "flow_main_quote",
 });

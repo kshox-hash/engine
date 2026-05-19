@@ -19,29 +19,22 @@ export class MessageService {
     );
   }
 
-  static async sendFunctionsTemplateMessage(
+  static async sendServicesLinkMessage(
     messageId: string,
     senderPhoneNumberId: string,
-    recipientPhoneNumber: string
+    recipientPhoneNumber: string,
+    userId: string
   ): Promise<unknown> {
-    return GraphApiService.sendTextMessage(
-      messageId,
-      senderPhoneNumberId,
-      recipientPhoneNumber,
-      "Estas son nuestras funciones disponibles."
-    );
-  }
+    const safeRecipient = String(recipientPhoneNumber || "").replace(/\D/g, "");
 
-  static async sendChatboxMessage(
-    messageId: string,
-    senderPhoneNumberId: string,
-    recipientPhoneNumber: string
-  ): Promise<unknown> {
+    const url =
+      `https://runtimegenerateui.onrender.com/open/menu/${userId}/${safeRecipient}`;
+
     return GraphApiService.sendTextMessage(
       messageId,
       senderPhoneNumberId,
       recipientPhoneNumber,
-      constants.APP_CHATBOX_MESSAGE
+      `Puedes revisar nuestros servicios aquí:\n${url}`
     );
   }
 
@@ -57,62 +50,4 @@ export class MessageService {
       constants.APP_CONTACT_MESSAGE
     );
   }
-
-  
-static async sendQuoteRuntimeLinkMessage(
-  messageId: string,
-  senderPhoneNumberId: string,
-  recipientPhoneNumber: string,
-  userId: string
-): Promise<unknown> {
-  const url = `https://runtimegenerateui.onrender.com/open/cotizador-dinamico/${userId}/${recipientPhoneNumber}`;
-
-  return GraphApiService.sendTextMessage(
-    messageId,
-    senderPhoneNumberId,
-    recipientPhoneNumber,
-    `Aquí puedes iniciar tu cotización:\n${url}`
-  );
-}
-
-  static async sendSupportMessage(
-    messageId: string,
-    senderPhoneNumberId: string,
-    recipientPhoneNumber: string
-  ): Promise<unknown> {
-    return GraphApiService.sendTextMessage(
-      messageId,
-      senderPhoneNumberId,
-      recipientPhoneNumber,
-      "Te ayudaremos con soporte."
-    );
-  }
-
-  static async sendAppointmentsMessage(
-    messageId: string,
-    senderPhoneNumberId: string,
-    recipientPhoneNumber: string
-  ): Promise<unknown> {
-    return GraphApiService.sendTextMessage(
-      messageId,
-      senderPhoneNumberId,
-      recipientPhoneNumber,
-      "Aquí puedes tomar horas."
-    );
-  }
-    static async sendCarousel(
-  messageId: string,
-  senderPhoneNumberId: string,
-  recipientPhoneNumber: string,
-  template: string,
-  userId: string
-) {
-  return GraphApiService.sendCarousel(
-  messageId,
-  senderPhoneNumberId,
-  recipientPhoneNumber,
-  template,
-  userId // 👈 ESTE ES EL FIX
-)
-} 
 }

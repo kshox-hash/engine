@@ -1,11 +1,7 @@
 export type TemplateActionName =
   | "send_main_menu"
-  | "send_chatbox_message"
-  | "send_contact_message"
-  | "send_quote_runtime_link"
-  | "send_support_message"
-  | "send_appointments_message"
-  | "send_carousel";
+  | "send_services_link"
+  | "send_contact_message";
 
 export type TemplateButton = {
   id: string;
@@ -36,11 +32,4 @@ export type ChatTemplate = {
   };
   buttons: TemplateButton[];
   fallbackAction: TemplateActionName;
-};
-
-export type NumberConfig = {
-  phoneNumberId: string;
-  tenantId: string;
-  templateId: string;
-  status: "active" | "inactive";
 };

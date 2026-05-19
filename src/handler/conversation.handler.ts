@@ -61,19 +61,12 @@ export class ConversationHandler {
     // EJECUTA EL MOTOR DE TEMPLATES
     // =========================================
     await TemplateEngine.handle({
-
-      // Template que contiene triggers y acciones
-      template,
-
-      // Mensaje procesado
-      message,
-
-      // Número receptor de WhatsApp
-      senderPhoneNumberId,
-
-      // Usuario/tenant dueño del número
-      userId: numberConfig.id,
-    });
+  template,
+  message,
+  senderPhoneNumberId,
+  userId: numberConfig.id,
+  companyName: numberConfig.company_name,
+});
   }
 
   // =========================================
