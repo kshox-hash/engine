@@ -4,24 +4,10 @@ import { ConversationHandler } from "../handler/conversation.handler";
 import { WebhookBody } from "../types/whatsapp.types";
 
 export const webhookController = {
-
-  /*
-  =========================================================
-  HELPERS
-  =========================================================
-  Métodos internos del controller.
-  Su objetivo es dejar el método incoming()
-  más limpio y fácil de leer.
-  =========================================================
-  */
-
-  // Valida que el webhook venga desde una cuenta de WhatsApp Business.
   _validateWhatsAppAccount(data: WebhookBody): boolean {
     return data.object === "whatsapp_business_account";
   },
 
-  // Extrae todos los "value" que vienen dentro del body de Meta.
-  // Meta puede enviar varios entry y varios changes.
   _getWebhookValues(data: WebhookBody) {
     const values = [];
 
@@ -36,7 +22,6 @@ export const webhookController = {
     return values;
   },
 
-  // Extrae la metadata del número de WhatsApp que recibió el mensaje.
   _getPhoneMetaData(value: any) {
     return {
       senderPhoneNumberId: value.metadata?.phone_number_id ?? "",
@@ -44,21 +29,30 @@ export const webhookController = {
     };
   },
 
-  // Maneja los status enviados por WhatsApp:
-  // sent, delivered, read, failed, etc.
   async _handleStatus(value: any) {
     const { senderPhoneNumberId } = this._getPhoneMetaData(value);
 
+    console.log("STATUS PHONE NUMBER ID:", senderPhoneNumberId);
+
     for (const status of value.statuses ?? []) {
+      console.log("RAW STATUS:");
+      console.log(JSON.stringify(status, null, 2));
+
       await ConversationHandler.handleStatus(status);
     }
   },
 
-  // Maneja los mensajes entrantes enviados por usuarios.
   async _handleMessage(value: any) {
-    const { senderPhoneNumberId } = this._getPhoneMetaData(value);
+    const { senderPhoneNumberId, displayPhoneNumber } =
+      this._getPhoneMetaData(value);
+
+    console.log("MESSAGE PHONE NUMBER ID:", senderPhoneNumberId);
+    console.log("DISPLAY PHONE NUMBER:", displayPhoneNumber);
 
     for (const rawMessage of value.messages ?? []) {
+      console.log("RAW MESSAGE:");
+      console.log(JSON.stringify(rawMessage, null, 2));
+
       await ConversationHandler.handleMessage(
         senderPhoneNumberId,
         rawMessage
@@ -66,55 +60,57 @@ export const webhookController = {
     }
   },
 
-  // Procesa cada "value" recibido desde Meta.
-  // Un value puede traer mensajes, status o ambos.
   async _processWebhookValue(value: any): Promise<void> {
+    console.log("WEBHOOK VALUE:");
+    console.log(JSON.stringify(value, null, 2));
+
+    if (value.statuses?.length) {
+      console.log("VALUE CONTAINS STATUSES:", value.statuses.length);
+    }
+
+    if (value.messages?.length) {
+      console.log("VALUE CONTAINS MESSAGES:", value.messages.length);
+    }
+
     await this._handleStatus(value);
     await this._handleMessage(value);
   },
 
-  /*
-  =========================================================
-  METHODS
-  =========================================================
-  Métodos públicos usados por las rutas de Express.
-  =========================================================
-  */
-
-  // Endpoint POST /webhook
-  // Recibe eventos reales desde Meta/WhatsApp.
   async incoming(
     req: Request<unknown, unknown, WebhookBody>,
     res: Response
   ): Promise<void> {
     try {
-      // Si el body no corresponde a WhatsApp Business,
-      // se rechaza el webhook.
+      console.log("WEBHOOK BODY:");
+      console.log(JSON.stringify(req.body, null, 2));
+
       if (!this._validateWhatsAppAccount(req.body)) {
+        console.log("INVALID WEBHOOK OBJECT:", req.body?.object);
         res.sendStatus(404);
         return;
       }
 
-      // Extrae los bloques value desde el body completo.
       const values = this._getWebhookValues(req.body);
 
-      // Procesa cada value recibido.
+      console.log("WEBHOOK VALUES COUNT:", values.length);
+
       for (const value of values) {
         await this._processWebhookValue(value);
       }
 
-      // Meta espera una respuesta 200 para confirmar recepción.
       res.status(200).send("EVENT_RECEIVED");
-
     } catch (err) {
-      // Si algo falla, responde error interno.
+      console.error("WEBHOOK ERROR:");
+      console.error(err);
+
       res.status(500).send("WEBHOOK_ERROR");
     }
   },
 
-  // Endpoint GET /webhook
-  // Meta lo usa para verificar el webhook al configurarlo.
   verify(req: Request, res: Response): void {
+    console.log("VERIFY WEBHOOK QUERY:");
+    console.log(JSON.stringify(req.query, null, 2));
+
     if (
       req.query["hub.mode"] !== "subscribe" ||
       req.query["hub.verify_token"] !== config.verifyToken
@@ -123,11 +119,9 @@ export const webhookController = {
       return;
     }
 
-    // Si el token es correcto, se devuelve el challenge de Meta.
     res.send(String(req.query["hub.challenge"] ?? ""));
   },
 
-  // Endpoint de prueba para saber si el servidor está vivo.
   health(_req: Request, res: Response): void {
     res.json({
       message: "Server is running",
